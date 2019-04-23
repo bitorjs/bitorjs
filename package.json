@@ -1,6 +1,6 @@
 {
   "name": "bitorjs",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "> 所有 api 出口, 项目入口文件(继承此类) > 前端,后端自动 选择",
   "main": "index.js",
   "browser": "browser",
