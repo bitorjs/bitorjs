@@ -60,6 +60,49 @@ export default class extends Application {
   }
 
   _registerStore(name, store) {
+    if (this.$config.redis && this.$config.redis.enable) {
+
+      if (Object.prototype.toString.call(this.$store) !== '[object Object]') {
+        let redis = require("redis"),
+          client = redis.createClient();
+        client.on("error", function (err) {
+          console.log("Error " + err);
+        });
+        this.$store = this.$store || {
+          client: client
+        };
+        this.context.$store = this.$store;
+      }
+      let client = this.$store.client;
+      this.$store[name] = {
+        set: (key, value) => {
+          return new Promise((resolve, reject) => {
+            client.set(`${name}-${key}`, value, (err, replay) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(replay);
+              }
+            })
+          })
+        },
+        get: (key) => {
+          return new Promise((resolve, reject) => {
+            client.get(`${name}-${key}`, (err, replay) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(replay);
+              }
+            })
+          })
+        }
+      }
+
+      Object.keys(store).map(key => {
+        this.$store[name].set(key, store[key]);
+      })
+    }
 
   }
 
