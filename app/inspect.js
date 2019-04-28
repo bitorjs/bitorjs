@@ -75,8 +75,7 @@ export default {
       }
       extraServices.forEach(key => {
         let extraService = allService[key];
-        extraService.bind(this.context);
-        this.context.$service[serviceName][key] = extraService;
+        this.context.$service[serviceName][key] = extraService.bind(this.context);
       })
     }
   },
@@ -181,35 +180,35 @@ export default {
       let m = requireContext(key);
       let c = m.default || m;
       let filename = key.replace(/(.*\/)*([^.]+).*/ig, "$2");
-      if (key.match(/\/component\/.*\.vue$/) != null) {
+      if (key.match(/\/components?\/.*\.vue$/) != null) {
         _componentHashMap.set(filename, c)
-      } else if (key.match(/\/filter\/.*\.js$/) != null) {
+      } else if (key.match(/\/filters?\/.*\.js$/) != null) {
         _filterHashMap.set(filename, c)
-      } else if (key.match(/\/middleware\/.*\.js$/) != null) {
+      } else if (key.match(/\/middlewares?\/.*\.js$/) != null) {
         _middlewareHashMap.set(filename, c)
-      } else if (key.match(/\/controller\/.*\.js$/) != null) {
+      } else if (key.match(/\/controllers?\/.*\.js$/) != null || key.match(/\/routes?\/.*\.js$/) != null || key.match(/\/routers?\/.*\.js$/) != null) {
         _controllerHashMap.set(filename, c)
-      } else if (key.match(/\/service\/.*\.js$/) != null) {
+      } else if (key.match(/\/services?\/.*\.js$/) != null) {
         _serviceHashMap.set(filename, m)
-      } else if (key.match(/\/mock\/.*\.js$/) != null) {
+      } else if (key.match(/\/mocks?\/.*\.js$/) != null) {
         _mockHashMap.set(filename, m)
-      } else if (key.match(/\/store\/.*\.js$/) != null) {
+      } else if (key.match(/\/stores?\/.*\.js$/) != null) {
         _webstoreHashMap.set(filename, c)
-      } else if (key.match(/\/plugin\.config\.js$/) != null) {
+      } else if (key.match(/\/plugin\.env\.js$/) != null) {
         c.forEach(item => {
           if (item.enable === true) _modules.push(item);
         })
-      } else if (key.match(/\/development\.config\.js$/) != null) {
+      } else if (key.match(/\/dev\.env\.js$/) != null) {
         if (process.env.NODE_ENV !== 'production') {
           this.$config = Object.assign(this.$config, c)
           this.$config.env = 'development';
         }
-      } else if (key.match(/\/production\.config\.js$/) != null) {
+      } else if (key.match(/\/prod\.env\.js$/) != null) {
         if (process.env.NODE_ENV === 'production') {
           this.$config = Object.assign(this.$config, c)
           this.$config.env = 'production';
         }
-      } else if (key.match(/\/app\.config\.js$/) != null) {
+      } else if (key.match(/\/index\.env\.js$/) != null) {
         this.$config = Object.assign(this.$config, c)
       }
     })
@@ -263,8 +262,8 @@ export default {
     })
     this.emit("ControllerMounted")
     this.emit('ready');
-    console.info("启动监听服务")
     this.beforeStart(port);
+    console.info("启动监听服务")
     return this;
   }
 }

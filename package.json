@@ -1,7 +1,7 @@
 {
   "name": "bitorjs",
-  "version": "0.0.6",
-  "description": "> 所有 api 出口, 项目入口文件(继承此类) > 前端,后端自动 选择",
+  "version": "0.0.13",
+  "description": "> vue & node 辅助开发工具包",
   "main": "index.js",
   "browser": "browser",
   "scripts": {
@@ -12,10 +12,10 @@
     "bitorjs-decorators": "^1.0.2",
     "bitorjs-router": "^1.0.3",
     "qs": "^6.7.0",
+    "koa": "^2.7.0",
     "koa-compose": "^4.1.0"
   },
   "peerDependencies": {
-    "koa": "^2.7.0",
     "vue": "^2.6.10",
     "vuex": "^3.1.0",
     "vuex-persist": "^2.0.0"

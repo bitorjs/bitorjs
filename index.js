@@ -13,8 +13,10 @@ export default class extends Application {
     global.context = this.context;
     console.info("App 应用实例化")
     this.context.$config = {}
+    this.ctx.$filter = Object.create(null);
     this.$config = this.context.$config;
 
+    // node 是发起的内部请求 未验证bug
     decorators.methods.forEach((method) => {
       this.context[`$${method}`] = (url, params) => {
 
@@ -52,7 +54,7 @@ export default class extends Application {
   }
 
   _registerFilter(filename, filter) {
-
+    this.ctx.$filter[filename] = filter;
   }
 
   _registerComponent(filename, component) {
@@ -72,12 +74,15 @@ export default class extends Application {
           client: client
         };
         this.context.$store = this.$store;
+
+
+
       }
       let client = this.$store.client;
-      this.$store[name] = {
-        set: (key, value) => {
+      this.$store[name] = new Proxy(client, {
+        get: (target, key, re) => {
           return new Promise((resolve, reject) => {
-            client.set(`${name}-${key}`, value, (err, replay) => {
+            target.get(`${name}-${key}`, (err, replay) => {
               if (err) {
                 reject(err);
               } else {
@@ -86,9 +91,9 @@ export default class extends Application {
             })
           })
         },
-        get: (key) => {
+        set: (target, key, value) => {
           return new Promise((resolve, reject) => {
-            client.get(`${name}-${key}`, (err, replay) => {
+            target.set(`${name}-${key}`, value, (err, replay) => {
               if (err) {
                 reject(err);
               } else {
@@ -96,11 +101,37 @@ export default class extends Application {
               }
             })
           })
-        }
-      }
+        },
+      })
+
+      // this.$store[name] = {
+      //   set: (key, value) => {
+      //     return new Promise((resolve, reject) => {
+      //       client.set(`${name}-${key}`, value, (err, replay) => {
+      //         if (err) {
+      //           reject(err);
+      //         } else {
+      //           resolve(replay);
+      //         }
+      //       })
+      //     })
+      //   },
+      //   get: (key) => {
+      //     return new Promise((resolve, reject) => {
+      //       client.get(`${name}-${key}`, (err, replay) => {
+      //         if (err) {
+      //           reject(err);
+      //         } else {
+      //           resolve(replay);
+      //         }
+      //       })
+      //     })
+      //   }
+      // }
 
       Object.keys(store).map(key => {
-        this.$store[name].set(key, store[key]);
+        // this.$store[name].set(key, store[key]);
+        this.$store[name][key] = store[key];
       })
     }
 

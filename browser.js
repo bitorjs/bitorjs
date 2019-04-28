@@ -17,6 +17,7 @@ export default class extends Application {
     console.info("实例化y应用程序")
     this.ctx = this.context;
     this.ctx.$config = {}
+    this.ctx.$filter = Object.create(null);
     this.$config = this.ctx.$config;
 
     this.mountVue();
@@ -51,8 +52,9 @@ export default class extends Application {
 
         let ctx = Object.create(this.ctx);
         ctx.params = {}
-        ctx.query = {}
-        ctx.body = {}
+        ctx.request = {};
+        ctx.query = ctx.request.query = {}
+        ctx.request.body = {}
         let urlParts = url.split("?")
         let routes = router.match(urlParts[0], method);
         console.log(routes)
@@ -61,21 +63,21 @@ export default class extends Application {
           ctx.params = route.params;
 
           if (urlParts[1]) {
-            ctx.query = Object.assign(ctx.query, qs.parse(urlParts[1]))
+            ctx.query = ctx.request.query = Object.assign(ctx.request.query, qs.parse(urlParts[1]))
           }
 
           if (method === "get") {
-            ctx.query = Object.assign(ctx.query, params);
+            ctx.query = ctx.request.query = Object.assign(ctx.request.query, params);
           } else {// if(method === "post")
-            ctx.body = Object.assign(ctx.body, params);
+            ctx.request.body = Object.assign(ctx.request.body, params);
           }
-
           return route.handle(ctx)
         } else {
           return Promise.reject(`未找到路由[${url}]`);
         }
       }
     })
+
   }
 
   createVueRoot(vueRootComponent, htmlElementId) {
@@ -127,6 +129,7 @@ export default class extends Application {
 
   _registerFilter(filename, filter) {
     Vue.filter(filename, filter)
+    this.ctx.$filter[filename] = filter;
   }
 
   _registerComponent(filename, component) {
