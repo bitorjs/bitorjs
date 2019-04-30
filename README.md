@@ -98,8 +98,6 @@
 
     // import Vue from 'vue'
     // import Router from 'vue-router'
-    ```
-
 
     // Vue.use(Router)
     
@@ -112,10 +110,6 @@
     //     }
     //   ]
     // })
-
-
-​       
    ```
 
 到此, 改造完毕, 接下来,你就可以 开启 bitorjs 之旅
-   ```
