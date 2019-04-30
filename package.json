@@ -1,14 +1,14 @@
 {
   "name": "bitorjs",
-  "version": "0.0.13",
-  "description": "> vue & node 辅助开发工具包",
+  "version": "0.0.15",
+  "description": "> vue & node 插件式开发工具包",
   "main": "index.js",
   "browser": "browser",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@bitores/hashhistory": "^1.0.0",
+    "bitorjs-hashhistory": "^1.0.1",
     "bitorjs-decorators": "^1.0.2",
     "bitorjs-router": "^1.0.3",
     "qs": "^6.7.0",

@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import compose from 'koa-compose';
-import HashHistory from '@bitores/hashhistory';
+import HashHistory from 'bitorjs-hashhistory';
 import Context from './context';
 import Request from './request';
 
