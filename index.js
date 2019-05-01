@@ -13,7 +13,6 @@ export default class extends Application {
     global.context = this.context;
     console.info("App 应用实例化")
     this.context.$config = {}
-    this.ctx.$filter = Object.create(null);
     this.$config = this.context.$config;
 
     // node 是发起的内部请求 未验证bug
@@ -54,6 +53,9 @@ export default class extends Application {
   }
 
   _registerFilter(filename, filter) {
+    this.$filter = this.$filter || Object.create(null);
+    this.ctx.$filter = this.ctx.$filter || Object.create(null);
+    this.$filter[filename] = filter;
     this.ctx.$filter[filename] = filter;
   }
 

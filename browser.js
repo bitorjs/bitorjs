@@ -17,7 +17,6 @@ export default class extends Application {
     console.info("实例化y应用程序")
     this.ctx = this.context;
     this.ctx.$config = {}
-    this.ctx.$filter = Object.create(null);
     this.$config = this.ctx.$config;
 
     this.mountVue();
@@ -48,7 +47,8 @@ export default class extends Application {
       this.$vue.__update = 0;
     }
     decorators.methods.forEach((method) => {
-      this.ctx[`$${method}`] = Vue.prototype[`$${method}`] = (url, params) => {
+      // this.ctx[`$${method}`] = // 为了防止view 跨过 controller 层取数据,暂时去掉
+      Vue.prototype[`$${method}`] = (url, params) => {
 
         let ctx = Object.create(this.ctx);
         ctx.params = {}
@@ -129,7 +129,12 @@ export default class extends Application {
 
   _registerFilter(filename, filter) {
     Vue.filter(filename, filter)
+    Vue.prototype.$filter = Vue.prototype.$filter || Object.create(null)
+    this.$filter = this.$filter || Object.create(null);
+    this.ctx.$filter = this.ctx.$filter || Object.create(null);
+    this.$filter[filename] = filter;
     this.ctx.$filter[filename] = filter;
+    Vue.prototype.$filter[filename] = filter;
   }
 
   _registerComponent(filename, component) {
@@ -138,8 +143,9 @@ export default class extends Application {
 
   _registerStore(name, store) {
     let vuxStore = new Vuex.Store(store, name);
-    this.$store = vuxStore;
-    this.context.$store = vuxStore;
+    this.$store = vuxStore; // app.$store 入口文件
+    this.context.$store = vuxStore; // ctx.$store
+    Vue.prototype.$store = vuxStore; // view 中 this.$store
   }
 
   beforeStart() {

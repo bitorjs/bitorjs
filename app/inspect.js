@@ -35,6 +35,7 @@ export default {
   registerService(filename, allService) {
     let serviceName = undefined;
     const defaultService = allService.default;
+    this.context.$service = this.context.$service || {};
     if (defaultService) {
       // console.log(allService, defaultService)
       let instance;
@@ -63,12 +64,11 @@ export default {
       }
 
       _services.set(serviceName, defaultService)
-      this.context.$service = this.context.$service || {};
       this.context.$service[serviceName] = instance;
     }
 
-    delete allService.default;
-    let extraServices = Object.keys(allService);
+    // delete allService.default;
+    let extraServices = Object.keys(allService).filter(k => k !== "default");
     if (extraServices.length > 0) {
       if (serviceName !== undefined) {
         this.context.$service[serviceName] = {};
@@ -126,15 +126,21 @@ export default {
         }
 
         controllerMiddlewares.push(
-          instance[subroute.prototype].bind(instance)
+          async (ctx, next) => {
+            ctx.body = undefined;
+            await instance[subroute.prototype].call(instance, ctx, next);
+            return ctx.body;
+          }
         )
 
         const fn = compose(controllerMiddlewares);
-        // router.register(path, { method: subroute.method.toLowerCase() }, fn)
         this._registerRouter(path, subroute.method.toLowerCase(), fn)
       } else {
-        this._registerRouter(path, subroute.method.toLowerCase(), instance[subroute.prototype].bind(instance))
-        // router.register(path, { method: subroute.method.toLowerCase() }, instance[subroute.prototype].bind(instance))
+        this._registerRouter(path, subroute.method.toLowerCase(), async (ctx, next) => {
+          ctx.body = undefined;
+          await instance[subroute.prototype].call(instance, ctx, next);
+          return ctx.body;
+        })
       }
     })
   },
@@ -173,7 +179,7 @@ export default {
     this.emit("did-mainclient")
   },
 
-  watch(requireContext) {
+  watch(requireContext, isConfig = false) {
     console.info("分析收集插件目录")
     return requireContext.keys().map(key => {
       console.log(key)
@@ -194,7 +200,7 @@ export default {
         _mockHashMap.set(filename, m)
       } else if (key.match(/\/stores?\/.*\.js$/) != null) {
         _webstoreHashMap.set(filename, c)
-      } else if (key.match(/\/plugin\.env\.js$/) != null) {
+      } else if (key.match(/\/plugins?\.env\.js$/) != null) {
         c.forEach(item => {
           if (item.enable === true) _modules.push(item);
         })
@@ -210,12 +216,14 @@ export default {
         }
       } else if (key.match(/\/index\.env\.js$/) != null) {
         this.$config = Object.assign(this.$config, c)
+      } else if (key.match(/\/index\.js$/) != null && isConfig) {
+        this.$config = Object.assign(this.$config, c);
       }
     })
   },
 
-  config(config) {
-    this.$config = Object.assign(this.$config, config)
+  config(requireContext) {
+    this.watch(requireContext, true);
   },
 
   start(client, port = 1030) {
