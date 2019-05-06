@@ -1,5 +1,7 @@
 # bitorjs
 
+> bitorjs 可以帮助开发者更好地在 VUE & NODE 项目中快速集成插件式开发等功能
+
 ### 使用方法见[文档](https://bitorjs.github.io/)
 
 ### 安装
@@ -52,34 +54,25 @@
 
 ##### 修改
 
-1. config/index.js 改为 config/index.env.js
-2. src/main.js
+1. 创建文件 config/index.env.js
+2. 修改文件 src/main.js
 3. ```
     // The Vue build version to load with the `import` command
     // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
     import Vue from 'vue'
     import Application from 'bitorjs';
     import App from './App'
-    // import router from './router'
 
     Vue.config.productionTip = false
 
-    /* eslint-disable no-new */
-    // new Vue({
-    //   el: '#app',
-    //   router,
-    //   components: { App },
-    //   template: ''
-    // })
     new Application({}, App, "#app").start(app => {
       app.watch(require.context('../config', false, /\.js$/))
       app.watch(require.context('.', true, /^((?!\/view\/).)+\.(vue|js)$/));
     })
          
-       
    ```
 
-4. src/router/index.js
+4. 修改文件 src/router/index.js
 5. ```
     import {
       Get,
@@ -95,21 +88,6 @@
         ctx.render(HelloWorld)
       }
     }
-
-    // import Vue from 'vue'
-    // import Router from 'vue-router'
-
-    // Vue.use(Router)
-    
-    // export default new Router({
-    //   routes: [
-    //     {
-    //       path: '/',
-    //       name: 'HelloWorld',
-    //       component: HelloWorld
-    //     }
-    //   ]
-    // })
    ```
 
 到此, 改造完毕, 接下来,你就可以 开启 bitorjs 之旅

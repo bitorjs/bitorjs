@@ -12,6 +12,7 @@ export default class extends Application {
     console.log("挂载 App 至 global对象")
     global.context = this.context;
     console.info("App 应用实例化")
+    this.ctx = this.context;
     this.context.$config = {}
     this.$config = this.context.$config;
 

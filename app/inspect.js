@@ -188,35 +188,35 @@ export default {
       let filename = key.replace(/(.*\/)*([^.]+).*/ig, "$2");
       if (key.match(/\/components?\/.*\.vue$/) != null) {
         _componentHashMap.set(filename, c)
-      } else if (key.match(/\/filters?\/.*\.js$/) != null) {
+      } else if (key.match(/\/filters?\/.*\.jsx?$/) != null) {
         _filterHashMap.set(filename, c)
-      } else if (key.match(/\/middlewares?\/.*\.js$/) != null) {
+      } else if (key.match(/\/middlewares?\/.*\.jsx?$/) != null) {
         _middlewareHashMap.set(filename, c)
-      } else if (key.match(/\/controllers?\/.*\.js$/) != null || key.match(/\/routes?\/.*\.js$/) != null || key.match(/\/routers?\/.*\.js$/) != null) {
+      } else if (key.match(/\/controllers?\/.*\.jsx?$/) != null || key.match(/\/routes?\/.*\.jsx?$/) != null || key.match(/\/routers?\/.*\.jsx?$/) != null) {
         _controllerHashMap.set(filename, c)
-      } else if (key.match(/\/services?\/.*\.js$/) != null) {
+      } else if (key.match(/\/services?\/.*\.jsx?$/) != null) {
         _serviceHashMap.set(filename, m)
-      } else if (key.match(/\/mocks?\/.*\.js$/) != null) {
+      } else if (key.match(/\/mocks?\/.*\.jsx?$/) != null) {
         _mockHashMap.set(filename, m)
-      } else if (key.match(/\/stores?\/.*\.js$/) != null) {
+      } else if (key.match(/\/stores?\/.*\.jsx?$/) != null) {
         _webstoreHashMap.set(filename, c)
-      } else if (key.match(/\/plugins?\.env\.js$/) != null) {
+      } else if (key.match(/\/plugins?\.env\.jsx?$/) != null) {
         c.forEach(item => {
           if (item.enable === true) _modules.push(item);
         })
-      } else if (key.match(/\/dev\.env\.js$/) != null) {
+      } else if (key.match(/\/dev\.env\.jsx?$/) != null) {
         if (process.env.NODE_ENV !== 'production') {
           this.$config = Object.assign(this.$config, c)
           this.$config.env = 'development';
         }
-      } else if (key.match(/\/prod\.env\.js$/) != null) {
+      } else if (key.match(/\/prod\.env\.jsx?$/) != null) {
         if (process.env.NODE_ENV === 'production') {
           this.$config = Object.assign(this.$config, c)
           this.$config.env = 'production';
         }
-      } else if (key.match(/\/index\.env\.js$/) != null) {
+      } else if (key.match(/\/index\.env\.jsx?$/) != null) {
         this.$config = Object.assign(this.$config, c)
-      } else if (key.match(/\/index\.js$/) != null && isConfig) {
+      } else if (key.match(/\/index\.jsx?$/) != null && isConfig) {
         this.$config = Object.assign(this.$config, c);
       }
     })

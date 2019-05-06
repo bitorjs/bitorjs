@@ -1,8 +1,8 @@
 {
   "name": "bitorjs",
-  "version": "0.0.17",
-  "description": "> vue & node 插件式开发工具包",
-  "main": "index.js",
+  "version": "0.0.19",
+  "description": "> React & vue & node 插件式开发工具包",
+  "main": "node.js",
   "browser": "browser",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,13 +12,15 @@
     "bitorjs-decorators": "^1.0.2",
     "bitorjs-router": "^1.0.3",
     "qs": "^6.7.0",
-    "koa": "^2.7.0",
     "koa-compose": "^4.1.0"
   },
   "peerDependencies": {
     "vue": "^2.6.10",
     "vuex": "^3.1.0",
-    "vuex-persist": "^2.0.0"
+    "vuex-persist": "^2.0.0",
+    "koa": "^2.7.0",
+    "react": "^16.8.2",
+    "react-dom": "^16.8.2"
   },
   "repository": {
     "type": "git",
