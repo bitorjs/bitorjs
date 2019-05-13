@@ -10,6 +10,7 @@ const _services = new Map();
 const _webstore = new Map();
 const _middlewares = new Map();
 
+const _configHashMap = new HashMap();
 const _componentHashMap = new HashMap();
 const _filterHashMap = new HashMap();
 const _webstoreHashMap = new HashMap();
@@ -100,6 +101,9 @@ export default {
       }
     }
     decorators.iterator(controller, (prefix, subroute) => {
+      prefix.path = prefix.path[0] === '/' ? prefix.path[0] : `/${prefix.path}`;
+      subroute.path = subroute.path[0] === '/' ? subroute.path[0] : `/${subroute.path}`;
+
       let path;
       if (prefix.path && prefix.path.length > 1) {
         subroute.path = subroute.path === '/' ? '(/)?' : subroute.path;
@@ -205,15 +209,17 @@ export default {
           if (item.enable === true) _modules.push(item);
         })
       } else if (key.match(/\/dev\.env\.jsx?$/) != null) {
-        if (process.env.NODE_ENV !== 'production') {
-          this.$config = Object.assign(this.$config, c)
-          this.$config.env = 'development';
-        }
+        _configHashMap.set(filename, c)
+        // if (process.env.NODE_ENV !== 'production') {
+        //   this.$config = Object.assign(this.$config, c)
+        //   this.$config.env = 'development';
+        // }
       } else if (key.match(/\/prod\.env\.jsx?$/) != null) {
-        if (process.env.NODE_ENV === 'production') {
-          this.$config = Object.assign(this.$config, c)
-          this.$config.env = 'production';
-        }
+        _configHashMap.set(filename, c)
+        // if (process.env.NODE_ENV === 'production') {
+        //   this.$config = Object.assign(this.$config, c)
+        //   this.$config.env = 'production';
+        // }
       } else if (key.match(/\/index\.env\.jsx?$/) != null) {
         this.$config = Object.assign(this.$config, c)
       } else if (key.match(/\/index\.jsx?$/) != null && isConfig) {
@@ -229,6 +235,21 @@ export default {
   start(client, port = 1030) {
 
     this.registerMainClient(client)
+
+    let devConifg = _configHashMap.get('dev');
+    let prodConfig = _configHashMap.get('prod');
+    if (devConifg || prodConfig) {
+      if (this.$config.env == 'production') {
+        if (prodConfig) {
+          this.$config = Object.assign(this.$config, prodConfig[0])
+        }
+      } else {
+        this.$config.env = 'development';
+        if (devConifg) {
+          this.$config = Object.assign(this.$config, devConifg[0])
+        }
+      }
+    }
 
     console.info("挂载其它插件")
     _modules.forEach(m => {

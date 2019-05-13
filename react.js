@@ -8,6 +8,7 @@ import qs from "qs";
 
 let reactRootComponent = null, htmlElementId = null;
 const router = new Router();
+const _stores = {};
 export default class extends Application {
   constructor(options = {}, rootComponent, elementId) {
     super(options)
@@ -123,7 +124,8 @@ export default class extends Application {
   }
 
   _registerStore(name, store) {
-
+    const rStore = new store();
+    _stores[name] = rStore;
   }
 
   beforeStart() {

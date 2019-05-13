@@ -1,8 +1,8 @@
 {
   "name": "bitorjs",
-  "version": "0.0.19",
+  "version": "0.0.22",
   "description": "> React & vue & node 插件式开发工具包",
-  "main": "node.js",
+  "main": "koa.js",
   "browser": "browser",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
