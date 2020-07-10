@@ -1,4 +1,4 @@
-import Application from 'koa';
-import Inspect from './inspect';
+const Application = require('koa');
+const Inspect = require('./inspect');
 Object.assign(Application.prototype, Inspect);
-export default Application;
+module.exports = Application;

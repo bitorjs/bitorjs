@@ -1,16 +1,16 @@
 {
   "name": "bitorjs",
-  "version": "0.0.22",
+  "version": "0.0.34",
   "description": "> React & vue & node 插件式开发工具包",
-  "main": "koa.js",
-  "browser": "browser",
+  "main": "index.js",
+  "browser": "./index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "bitorjs-hashhistory": "^1.0.1",
+    "@bitores/hashhistory": "^1.0.1",
     "bitorjs-decorators": "^1.0.2",
-    "bitorjs-router": "^1.0.3",
+    "@bitores/router": "^1.0.4",
     "qs": "^6.7.0",
     "koa-compose": "^4.1.0"
   },

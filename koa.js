@@ -1,11 +1,12 @@
-import Application from './app';
+const qs = require("qs");
+const KoaRouter = require('koa-router');
+const decorators = require('bitorjs-decorators');
+const Application = require('./app');
 
-import KoaRouter from 'koa-router';
-import decorators from 'bitorjs-decorators';
-import qs from "qs";
 
 const router = new KoaRouter();
-export default class extends Application {
+
+class KoaApplication extends Application {
 
   constructor() {
     super()
@@ -149,5 +150,4 @@ export default class extends Application {
 
 }
 
-export * from "bitorjs-decorators";
-
+module.exports = KoaApplication;

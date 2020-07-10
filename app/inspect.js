@@ -1,7 +1,7 @@
 
-import compose from 'koa-compose';
-import decorators from 'bitorjs-decorators';
-import HashMap from './hashmap';
+const compose = require('koa-compose');
+const decorators = require('bitorjs-decorators');
+const HashMap = require('./hashmap');
 
 
 const _modules = [];
@@ -20,9 +20,7 @@ const _middlewareHashMap = new HashMap();
 const _serviceHashMap = new HashMap();
 const _mockHashMap = new HashMap();
 
-
-export default {
-
+module.exports = {
   registerFilter(filename, filter) {
     if (_filters.get(filename) === undefined) {
       _filters.set(filename, filter)
@@ -101,8 +99,8 @@ export default {
       }
     }
     decorators.iterator(controller, (prefix, subroute) => {
-      prefix.path = prefix.path[0] === '/' ? prefix.path[0] : `/${prefix.path}`;
-      subroute.path = subroute.path[0] === '/' ? subroute.path[0] : `/${subroute.path}`;
+      prefix.path = prefix.path[0] === '/' ? prefix.path : `/${prefix.path}`;
+      subroute.path = subroute.path[0] === '/' ? subroute.path : `/${subroute.path}`;
 
       let path;
       if (prefix.path && prefix.path.length > 1) {
@@ -130,21 +128,13 @@ export default {
         }
 
         controllerMiddlewares.push(
-          async (ctx, next) => {
-            ctx.body = undefined;
-            await instance[subroute.prototype].call(instance, ctx, next);
-            return ctx.body;
-          }
+          async (ctx, next) => await instance[subroute.prototype].call(instance, ctx, next)
         )
 
         const fn = compose(controllerMiddlewares);
         this._registerRouter(path, subroute.method.toLowerCase(), fn)
       } else {
-        this._registerRouter(path, subroute.method.toLowerCase(), async (ctx, next) => {
-          ctx.body = undefined;
-          await instance[subroute.prototype].call(instance, ctx, next);
-          return ctx.body;
-        })
+        this._registerRouter(path, subroute.method.toLowerCase(), async (ctx, next) => await instance[subroute.prototype].call(instance, ctx, next))
       }
     })
   },
@@ -295,4 +285,5 @@ export default {
     console.info("启动监听服务")
     return this;
   }
+
 }

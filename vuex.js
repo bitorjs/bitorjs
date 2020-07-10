@@ -1,8 +1,10 @@
-import Vue from 'vue';
-import Vuex from 'vuex'
-import Qs from 'qs';
-import VuexPersistence from 'vuex-persist'
+let Vue = require('vue');
+const Vuex = require('vuex')
+const Qs = require('qs');
+const { VuexPersistence } = require('vuex-persist')
+const extend = require('./extends')
 
+Vue = Vue.default || Vue;
 let _namespace = '',
   storeProxy = null,
   commit = null,
@@ -68,47 +70,53 @@ function genProxy(instance) {
   return proxy;
 }
 
+function Store(options = {}, namespace) {
+  options = generOption(options)
+  if (Storeinstance == null) {
+    const instance = new Vuex.Store(generOption({
+      plugins: [vuexLocal.plugin]
+    }))
 
-class Store extends Vuex.Store {
-  constructor(options = {}, namespace) {
-    options = generOption(options)
-    if (Storeinstance == null) {
-      const instance = super(generOption({
-        plugins: [vuexLocal.plugin]
-      }))
+    overrideMethod(instance)
+    storeProxy = genProxy(instance);
 
-      overrideMethod(instance)
-      storeProxy = genProxy(instance);
-
-      // Vue.prototype.$store = instance;
-      Storeinstance = instance;
-    }
-
-    options.namespaced = true;
-    Storeinstance.registerModule(namespace, options);
-
-    return storeProxy;
+    // Vue.prototype.$store = instance;
+    Storeinstance = instance;
   }
 
-  setItem(key, value) {
-    commit(`${_namespace}STORE:SET`, {
-      key,
-      value
-    })
-    _namespace = ''
-  }
+  options.namespaced = true;
+  Storeinstance.registerModule(namespace, options);
 
-  assign(payload) {
-    commit(`${_namespace}STORE:ASSIGN`, payload)
-    _namespace = ''
-  }
-
-  qs(payload) {
-    commit(`${_namespace}STORE:QS`, payload)
-    _namespace = ''
-  }
+  return storeProxy;
 }
 
-Vuex.Store = Store;
+extend(Vuex.Store, Store);
+// class Store extends Vuex.Store {
+//   constructor() {
+
+//   }
+
+Store.prototype.setItem = function (key, value) {
+  commit(`${_namespace}STORE:SET`, {
+    key,
+    value
+  })
+  _namespace = ''
+}
+
+Store.prototype.assign = function (payload) {
+  commit(`${_namespace}STORE:ASSIGN`, payload)
+  _namespace = ''
+}
+
+Store.prototype.qs = function (payload) {
+  commit(`${_namespace}STORE:QS`, payload)
+  _namespace = ''
+}
+// }
+
+Object.assign(Vuex.Store, Store)
+
+Vuex.NewStore = Store;
 Vue.use(Vuex);
-export default Vuex;
+module.exports = Vuex;
