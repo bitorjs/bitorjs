@@ -281,7 +281,7 @@ module.exports = {
     })
     this.emit("ControllerMounted")
     this.emit('ready');
-    this.beforeStart(port);
+    this.beforeStart(port, port>0);
     console.info("启动监听服务")
     return this;
   }
