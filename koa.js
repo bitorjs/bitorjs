@@ -141,11 +141,14 @@ class KoaApplication extends Application {
 
   }
 
-  beforeStart(port = 1030) {
+  beforeStart(port = 1030, enListen = true) {
     this.use(router.routes())
-    this.listen(port, () => {
-      console.log(`server is running at http://localhost:${port}`)
-    });
+    if(enListen) {
+      this.listen(port, () => {
+        console.log(`server is running at http://localhost:${port}`)
+      });
+    }
+    
   }
 
 }

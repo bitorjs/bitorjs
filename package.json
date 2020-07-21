@@ -1,6 +1,6 @@
 {
   "name": "bitorjs",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "description": "> React & vue & node 插件式开发工具包",
   "main": "index.js",
   "browser": "./index.js",
